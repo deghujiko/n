@@ -1,20 +1,26 @@
-function zigzagLevelOrder(root) {
-  if (!root) return [];
-  const result = [];
-  const queue = [root];
-  let zigzag = false;
-  while (queue.length) {
-    const levelSize = queue.length;
-    const currentLevel = [];
-    for (let i = 0; i < levelSize; i++) {
-      const node = queue.shift();
-      if (zigzag) currentLevel.unshift(node.val);
-      else currentLevel.push(node.val);
-      if (node.left) queue.push(node.left);
-      if (node.right) queue.push(node.right);
+const mergeSortIterative = (arr) => {
+  const merge = (left, right) => {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+    while (leftIndex < left.length && rightIndex < right.length) {
+      if (left[leftIndex] < right[rightIndex]) {
+        result.push(left[leftIndex]);
+        leftIndex++;
+      } else {
+        result.push(right[rightIndex]);
+        rightIndex++;
+      }
     }
-    result.push(currentLevel);
-    zigzag = !zigzag;
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  };
+  const mergeSize = 2;
+  for (let i = 0; i < arr.length; i += mergeSize) {
+    for (let j = i; j < arr.length; j += mergeSize) {
+      const left = arr.slice(j, j + mergeSize / 2);
+      const right = arr.slice(j + mergeSize / 2, j + mergeSize);
+      arr.splice(j, mergeSize, ...merge(left, right));
+    }
   }
-  return result;
-}
+  return arr;
+};
