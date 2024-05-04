@@ -1,26 +1,40 @@
-const mergeSortIterative = (arr) => {
-  const merge = (left, right) => {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-    while (leftIndex < left.length && rightIndex < right.length) {
-      if (left[leftIndex] < right[rightIndex]) {
-        result.push(left[leftIndex]);
-        leftIndex++;
+const strandSort = (arr) => {
+  const extract = (arr, x) => {
+    const extracted = [];
+    let i = 0;
+    while (i < arr.length) {
+      if (x.includes(arr[i])) {
+        extracted.push(arr.splice(i, 1)[0]);
       } else {
-        result.push(right[rightIndex]);
-        rightIndex++;
+        i++;
       }
     }
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    return extracted;
   };
-  const mergeSize = 2;
-  for (let i = 0; i < arr.length; i += mergeSize) {
-    for (let j = i; j < arr.length; j += mergeSize) {
-      const left = arr.slice(j, j + mergeSize / 2);
-      const right = arr.slice(j + mergeSize / 2, j + mergeSize);
-      arr.splice(j, mergeSize, ...merge(left, right));
+  const merge = (a, b) => {
+    const merged = [];
+    let i = 0;
+    let j = 0;
+    while (i < a.length && j < b.length) {
+      if (a[i] < b[j]) {
+        merged.push(a[i]);
+        i++;
+      } else {
+        merged.push(b[j]);
+        j++;
+      }
     }
+    return merged.concat(i < a.length ? a.slice(i) : b.slice(j));
+  };
+  let sorted = [];
+  while (arr.length > 0) {
+    let sublist = [arr.shift()];
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] > sublist[sublist.length - 1]) {
+        sublist.push(arr.splice(i, 1)[0]);
+      }
+    }
+    sorted = merge(sorted, sublist);
   }
-  return arr;
+  return sorted;
 };
